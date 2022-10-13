@@ -14,7 +14,7 @@ class TreeStore:
 
         for item in items[1:]:
             _nodes[item['id']] = []
-            _nodes[item['parent']].append(item)
+            _nodes[item['parent']].append(item['id'])
             _items[item['id']] = item
 
         self._nodes = _nodes
@@ -29,8 +29,8 @@ class TreeStore:
         return self._items[item_id]
 
     def getChildren(self, item_id: int) -> List:
-        # обращение к элементу напрямую, сложность O(1)
-        return self._nodes[item_id]
+        # сложность O(n), можно было хранить в узлах сами элемнты, тогда было бы O(1) в ущерб памяти
+        return [self._items[i] for i in self._nodes[item_id]]
 
     def getAllParents(self, item_id: int) -> List:
         # Сложность O(n + 1), где n - кол-во родительских узлов
@@ -39,7 +39,6 @@ class TreeStore:
             return []
         parent_id = item['parent']
         return [self._items[parent_id]] + self.getAllParents(parent_id)
-
 
 example_items = [
     {"id": 1, "parent": "root"},
